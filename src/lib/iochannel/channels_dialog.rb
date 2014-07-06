@@ -101,7 +101,7 @@ module IOChannel
       devices = Yast::UI.QueryWidget(:channels_table, :SelectedItems)
       channels = Channels.new(devices.map {|d| Channel.new(d) })
 
-      Yast.y2milestone("Going to unblock channels #{channels.inspect}")
+      Yast.y2milestone("Going to block channels #{channels.inspect}")
       channels.block
     end
 

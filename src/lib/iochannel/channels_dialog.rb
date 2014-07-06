@@ -23,7 +23,6 @@ require "yast"
 
 module IOChannel
   class ChannelsDialog < Dialog
-    include Yast::UIShortcuts
     include Yast::I18n
 
     def self.run
@@ -120,8 +119,8 @@ module IOChannel
 
     def channels_items
       prefiltered_channels.map do |channel|
-        Item(
-          Id(channel.device),
+        Yast::Term.new(:item, 
+          Yast::Term.new(:id, channel.device),
           channel.device,
           channel.used? ? _("yes") : _("no")
         )

@@ -32,31 +32,11 @@ module IOChannel
     end
 
   private
-    def ok_handler
-      range = ChannelRange.from_string(@channel_range.value)
-      exit(range.matching_channels)
-    rescue InvalidRangeValue => e
-      invalid_range_message(e.value)
-    end
-
-    def invalid_range_message value
-      # TRANSLATORS: %s stands for the smallest snippet inside which we detect syntax error
-      msg = _("Specified range is invalid. Wrong value is inside snippet '%s'") % value
-      @message.replace(Label.new(msg))
-    end
-
     def dialog_content
       VBox.new(
         heading,
         *unban_content,
         ending_buttons
-      )
-    end
-
-    def ending_buttons
-      HBox.new(
-        PushButton.new(:ok, Yast::Label.OKButton) { ok_handler },
-        PushButton.new(:cancel, Yast::Label.CancelButton) { exit nil }
       )
     end
 
@@ -72,6 +52,26 @@ module IOChannel
         @message = ReplacePoint.new(:message, Empty.new),
         @channel_range = InputField.new(:channel_range, _("Ranges to Unban."), "")
       ]
+    end
+
+    def ending_buttons
+      HBox.new(
+        PushButton.new(:ok, Yast::Label.OKButton) { ok_handler },
+        PushButton.new(:cancel, Yast::Label.CancelButton) { exit nil }
+      )
+    end
+
+    def ok_handler
+      range = ChannelRange.from_string(@channel_range.value)
+      exit(range.matching_channels)
+    rescue InvalidRangeValue => e
+      invalid_range_message(e.value)
+    end
+
+    def invalid_range_message value
+      # TRANSLATORS: %s stands for the smallest snippet inside which we detect syntax error
+      msg = _("Specified range is invalid. Wrong value is inside snippet '%s'") % value
+      @message.replace(Label.new(msg))
     end
   end
 end

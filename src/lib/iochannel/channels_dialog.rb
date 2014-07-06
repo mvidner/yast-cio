@@ -22,7 +22,7 @@ require "widgets"
 require "yast"
 
 module IOChannel
-  class ChannelsDialog
+  class ChannelsDialog < Dialog
     include Yast::UIShortcuts
     include Yast::I18n
 
@@ -39,25 +39,11 @@ module IOChannel
       read_channels
     end
 
-    def run
-      return unless create_dialog
-
-      begin
-        return controller_loop
-      ensure
-        close_dialog
-      end
-    end
-
   private
     DEFAULT_SIZE_OPT = Yast::Term.new(:opt, :defaultsize)
 
-    def create_dialog
+    def open_dialog
       Yast::UI.OpenDialog DEFAULT_SIZE_OPT, dialog_content
-    end
-
-    def close_dialog
-      Yast::UI.CloseDialog
     end
 
     def read_channels

@@ -18,10 +18,11 @@
 
 require "iochannel/channels"
 require "iochannel/channel_range"
+require "widgets"
 require "yast"
 
 module IOChannel
-  class UnbanDialog
+  class UnbanDialog < Dialog
     include Yast::UIShortcuts
     include Yast::I18n
 
@@ -33,27 +34,11 @@ module IOChannel
       dialog.run
     end
 
-    def run
+    def initialize
       textdomain "cio"
-
-      raise "Failed to create dialog" unless create_dialog
-
-      begin
-        return controller_loop
-      ensure
-        close_dialog
-      end
     end
 
   private
-    def create_dialog
-      Yast::UI.OpenDialog dialog_content
-    end
-
-    def close_dialog
-      Yast::UI.CloseDialog
-    end
-
     def controller_loop
       while true do
         input = Yast::UI.UserInput

@@ -41,3 +41,26 @@ class PushButton < Widget
     term(:PushButton, term(:id, id), label)
   end
 end
+
+class Dialog
+  def run
+    open_dialog or raise "Failed to create dialog"
+    begin
+      controller_loop
+    ensure
+      close_dialog
+    end
+  end
+
+  def open_dialog
+    Yast::UI.OpenDialog dialog_content
+  end
+
+  def dialog_content
+    raise NotImplementedError
+  end
+
+  def close_dialog
+    Yast::UI.CloseDialog
+  end
+end

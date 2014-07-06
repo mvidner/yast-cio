@@ -60,9 +60,9 @@ module IOChannel
         when :filter_text
           redraw_channels
         when :clear
-          Yast::UI.ChangeWidget(:channels_table, :SelectedItems, [])
+          @channels_table.value = []
         when :select_all
-          Yast::UI.ChangeWidget(:channels_table, :SelectedItems, prefiltered_channels.map(&:device))
+          @channels_table.value = prefiltered_channels.map(&:device)
         when :block
           block_channels
           read_channels
@@ -81,7 +81,7 @@ module IOChannel
     end
 
     def block_channels
-      devices = Yast::UI.QueryWidget(:channels_table, :SelectedItems)
+      devices = @channels_table.value
       channels = Channels.new(devices.map {|d| Channel.new(d) })
 
       Yast.y2milestone("Going to block channels #{channels.inspect}")
@@ -109,7 +109,7 @@ module IOChannel
     end
 
     def channels_table
-      Table.new(
+      @channels_table = Table.new(
         :channels_table,
         :multiSelection,
         [_("Device"), _("Used")],

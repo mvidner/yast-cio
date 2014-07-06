@@ -37,8 +37,16 @@ class Widget
     false
   end
 
+  def value_property
+    :Value
+  end
+
   def value
-    Yast::UI.QueryWidget(id, :Value)
+    Yast::UI.QueryWidget(id, value_property)
+  end
+
+  def value=(v)
+    Yast::UI.ChangeWidget(id, value_property, v)
   end
 
   # @api private
@@ -125,6 +133,10 @@ class Table < Widget
          term(:opt, opt),
          term(:header, *header),
          label)
+  end
+
+  def value_property
+    :SelectedItems
   end
 end
 

@@ -196,19 +196,23 @@ class Dialog
   end
 
   def exit(return_value)
-    @return_value = return_value
+    @return_value << return_value
   end
     
   def controller_loop
-    @return_value = nil
-    while @return_value.nil? do
+    @return_value = []
+    while @return_value.empty? do
       input = Yast::UI.UserInput
       dispatched = @widget.dispatch input
       if ! dispatched
         global_handler input
       end
     end
-    @return_value
+    @return_value.shift
+  end
+
+  def global_handler(ui_id)
+    # do nothing by default
   end
 
   private

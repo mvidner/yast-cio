@@ -18,6 +18,7 @@
 
 require "iochannel/channels"
 require "iochannel/unban_dialog"
+require "widgets"
 require "yast"
 
 module IOChannel
@@ -159,15 +160,15 @@ module IOChannel
       VBox(
         Label(_("Filter channels")),
         InputField(Id(:filter_text), Opt(:notify),""),
-        PushButton(Id(:select_all), _("&Select All")),
-        PushButton(Id(:clear), _("&Clear selection")),
-        PushButton(Id(:block), _("&Blacklist Selected Channels")),
-        PushButton(Id(:unban), _("&Unban Channels")),
+        PushButton.new(:select_all, _("&Select All")).to_term,
+        PushButton.new(:clear, _("&Clear selection")).to_term,
+        PushButton.new(:block, _("&Blacklist Selected Channels")).to_term,
+        PushButton.new(:unban, _("&Unban Channels")).to_term,
       )
     end
 
     def ending_buttons
-      PushButton(Id(:ok), _("&Exit"))
+      PushButton.new(:ok, _("&Exit")).to_term
     end
   end
 end

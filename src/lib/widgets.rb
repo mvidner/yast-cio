@@ -38,8 +38,44 @@ class PushButton < Widget
   end
 
   def to_term
-    term(:PushButton, term(:id, id), label)
+    term(self.class.to_s.to_sym, term(:id, id), label)
   end
+end
+
+class InputField < Widget
+  attr_reader :id, :label
+  def initialize(id, opt, label)
+    @id = id
+    @opt = opt
+    @label = label
+  end
+
+  def to_term
+    term(self.class.to_s.to_sym, term(:id, id), term(:opt, opt), label)
+  end
+end
+
+class ContainerWidget < Widget
+  def initialize(* children)
+    @children = children
+  end
+
+  def to_term
+    child_terms = @children.map do |c|
+      if c.respond_to? :to_term
+        c.to_term
+      else
+        c
+      end
+    end
+    term(self.class.to_s.to_sym, * child_terms)
+  end
+end
+
+class HBox < ContainerWidget
+end
+
+class VBox < ContainerWidget
 end
 
 class Dialog
@@ -53,7 +89,9 @@ class Dialog
   end
 
   def open_dialog
-    Yast::UI.OpenDialog dialog_content
+    @widget = dialog_content
+    term = termize @widget
+    Yast::UI.OpenDialog term
   end
 
   def dialog_content
@@ -62,5 +100,19 @@ class Dialog
 
   def close_dialog
     Yast::UI.CloseDialog
+  end
+
+  private
+
+  # Convert a hierarchy composed of Terms mixed with Widgets
+  # to Terms only
+  def termize(o)
+    if o.respond_to? :to_term
+      o.to_term
+    elsif o.is_a? Yast::Term
+      Yast::Term.new(o.value, * o.params.map {|p| termize(p) })
+    elsif
+      o # was a non-term argument of a term
+    end
   end
 end

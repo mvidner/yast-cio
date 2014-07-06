@@ -43,7 +43,7 @@ module IOChannel
     DEFAULT_SIZE_OPT = Yast::Term.new(:opt, :defaultsize)
 
     def open_dialog
-      Yast::UI.OpenDialog DEFAULT_SIZE_OPT, dialog_content
+      Yast::UI.OpenDialog DEFAULT_SIZE_OPT, termize(dialog_content)
     end
 
     def read_channels
@@ -98,9 +98,9 @@ module IOChannel
     end
 
     def dialog_content
-      VBox(
+      VBox.new(
         headings,
-        HBox(
+        HBox.new(
           channels_table,
           action_buttons
         ),
@@ -143,18 +143,19 @@ module IOChannel
     end
 
     def action_buttons
-      VBox(
+      EMPTY_LABEL = ""
+      VBox.new(
         Label(_("Filter channels")),
-        InputField(Id(:filter_text), Opt(:notify),""),
-        PushButton.new(:select_all, _("&Select All")).to_term,
-        PushButton.new(:clear, _("&Clear selection")).to_term,
-        PushButton.new(:block, _("&Blacklist Selected Channels")).to_term,
-        PushButton.new(:unban, _("&Unban Channels")).to_term,
+        InputField.new(:filter_text, :notify, EMPTY_LABEL),
+        PushButton.new(:select_all, _("&Select All")),
+        PushButton.new(:clear, _("&Clear selection")),
+        PushButton.new(:block, _("&Blacklist Selected Channels")),
+        PushButton.new(:unban, _("&Unban Channels")),
       )
     end
 
     def ending_buttons
-      PushButton.new(:ok, _("&Exit")).to_term
+      PushButton.new(:ok, _("&Exit"))
     end
   end
 end

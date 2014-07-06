@@ -193,6 +193,10 @@ end
 
 
 class Dialog
+  def self.run
+    self.new.run
+  end
+
   def run
     open_dialog or raise "Failed to create dialog"
     begin

@@ -25,12 +25,7 @@ module IOChannel
   class UnbanDialog < Dialog
     include Yast::I18n
 
-    def self.run
-      Yast.import "Label"
-
-      dialog = UnbanDialog.new
-      dialog.run
-    end
+    Yast.import "Label"
 
     def initialize
       textdomain "cio"

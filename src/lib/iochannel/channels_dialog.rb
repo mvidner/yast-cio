@@ -25,11 +25,6 @@ module IOChannel
   class ChannelsDialog < Dialog
     include Yast::I18n
 
-    def self.run
-      dialog = ChannelsDialog.new
-      dialog.run
-    end
-
     def initialize
       textdomain "cio"
 

@@ -43,7 +43,7 @@ class PushButton < Widget
 end
 
 class InputField < Widget
-  attr_reader :id, :label
+  attr_reader :id, :opt, :label
   def initialize(id, opt, label)
     @id = id
     @opt = opt

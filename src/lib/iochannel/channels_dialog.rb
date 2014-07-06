@@ -142,8 +142,8 @@ module IOChannel
       end
     end
 
+    EMPTY_LABEL = ""
     def action_buttons
-      EMPTY_LABEL = ""
       VBox.new(
         Label(_("Filter channels")),
         InputField.new(:filter_text, :notify, EMPTY_LABEL),

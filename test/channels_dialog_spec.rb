@@ -54,9 +54,8 @@ describe IOChannel::ChannelsDialog do
     expect(ui).to receive(:UserInput).
       and_return(*data[:input])
 
-    expect(ui).to receive(:QueryWidget).
+    allow(ui).to receive(:QueryWidget).
       with(:filter_text, :Value).
-      at_least(:once).
       and_return(data[:filter])
   end
 

@@ -128,10 +128,12 @@ module IOChannel
     end
 
     def prefiltered_channels
-      filter = Yast::UI.QueryWidget(:filter_text, :Value)
+      if ! @filter_text         # dialog not yet created
+        return @channels
+      end
+      filter = @filter_text.value
 
-      # filter can be empty if dialog is not yet created
-      return @channels if !filter || filter.empty?
+      return @channels if filter.empty?
 
       @channels.select do |channel|
         channel.device.include? filter
@@ -142,7 +144,7 @@ module IOChannel
     def action_buttons
       VBox.new(
         Label.new(_("Filter channels")),
-        InputField.new(:filter_text, :notify, EMPTY_LABEL),
+        @filter_text = InputField.new(:filter_text, :notify, EMPTY_LABEL),
         PushButton.new(:select_all, _("&Select All")),
         PushButton.new(:clear, _("&Clear selection")),
         PushButton.new(:block, _("&Blacklist Selected Channels")),

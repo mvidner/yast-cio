@@ -37,6 +37,10 @@ class Widget
     false
   end
 
+  def value
+    Yast::UI.QueryWidget(id, :Value)
+  end
+
   # @api private
   def term(*args)
     Yast::Term.new(*args)

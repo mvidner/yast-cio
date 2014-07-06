@@ -39,8 +39,7 @@ module IOChannel
 
   private
     def ok_handler
-      channel_range_value = Yast::UI.QueryWidget(:channel_range, :Value)
-      range = ChannelRange.from_string channel_range_value
+      range = ChannelRange.from_string(@channel_range.value)
       exit(range.matching_channels)
     rescue InvalidRangeValue => e
       invalid_range_message(e.value)
@@ -78,7 +77,7 @@ module IOChannel
           "Range can be channel, part of channel which will be filled to zero or range specified with dash.\n"+
           "Example value: 0.0.0001, AA00, 0.1.0100-200")),
         ReplacePoint.new(:message, Empty.new),
-        InputField.new(:channel_range, _("Ranges to Unban."), "")
+        @channel_range = InputField.new(:channel_range, _("Ranges to Unban."), "")
       ]
     end
   end

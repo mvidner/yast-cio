@@ -19,9 +19,21 @@
 require "yast"
 
 class Widget
+  # a block
+  attr_accessor :handler
+
   # @return a Term for Yast::UI.OpenDialog
   def to_term
     raise NotImplementedError
+  end
+
+  # @param ui_id id of widget as returned by UI.UserInput
+  # @return true if his widget has handled the input
+  def dispatch(ui_id)
+    if @id == ui_id && handler
+      return handler.call
+    end
+    false
   end
 
   # @api private
@@ -32,14 +44,29 @@ end
 
 class PushButton < Widget
   attr_reader :id, :label
-  def initialize(id, label)
+  def initialize(id, label, &handler)
     @id = id
     @label = label
+    @handler = handler
   end
 
   def to_term
     term(self.class.to_s.to_sym, term(:id, id), label)
   end
+end
+
+class Label < Widget
+  attr_reader :label
+  def initialize( label)
+    @label = label
+  end
+
+  def to_term
+    term(self.class.to_s.to_sym, label)
+  end
+end
+
+class Heading < Label
 end
 
 class InputField < Widget
@@ -52,6 +79,24 @@ class InputField < Widget
 
   def to_term
     term(self.class.to_s.to_sym, term(:id, id), term(:opt, opt), label)
+  end
+end
+
+class Table < Widget
+  attr_reader :id, :opt, :header, :label
+  def initialize(id, opt, header, label)
+    @id = id
+    @opt = opt
+    @header = header
+    @label = label
+  end
+
+  def to_term
+    term(self.class.to_s.to_sym,
+         term(:id, id),
+         term(:opt, opt),
+         term(:header, *header),
+         label)
   end
 end
 
@@ -69,6 +114,14 @@ class ContainerWidget < Widget
       end
     end
     term(self.class.to_s.to_sym, * child_terms)
+  end
+
+  def dispatch(ui_id)
+    ret = nil
+    @children.find do |c|
+      ret = c.dispatch(ui_id)
+    end
+    ret
   end
 end
 
@@ -106,6 +159,22 @@ class Dialog
 
   def close_dialog
     Yast::UI.CloseDialog
+  end
+
+  def exit(return_value)
+    @return_value = return_value
+  end
+    
+  def controller_loop
+    @return_value = nil
+    while @return_value.nil? do
+      input = Yast::UI.UserInput
+      dispatched = @widget.dispatch input
+      if ! dispatched
+        global_handler input
+      end
+    end
+    @return_value
   end
 
   private

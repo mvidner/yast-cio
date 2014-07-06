@@ -54,11 +54,9 @@ module IOChannel
       Yast::UI.ChangeWidget(:channels_table, :Items, channels_items)
     end
 
-    def controller_loop
-      while true do
-        input = Yast::UI.UserInput
+    def global_handler(input)
         case input
-        when :ok, :cancel
+        when :cancel
           return :ok
         when :filter_text
           redraw_channels
@@ -73,7 +71,7 @@ module IOChannel
         when :unban
           devices = UnbanDialog.run
           Yast.y2milestone("Going to unblock devices #{devices.inspect}")
-          next unless devices
+          return unless devices
 
           unban_channels devices
           read_channels
@@ -81,7 +79,6 @@ module IOChannel
         else
           raise "Unknown action #{input}"
         end
-      end
     end
 
     def block_channels
@@ -109,14 +106,14 @@ module IOChannel
     end
 
     def headings
-      Heading(_("Available Input/Output Channels"))
+      Heading.new(_("Available Input/Output Channels"))
     end
 
     def channels_table
-      Table(
-        Id(:channels_table),
-        Opt(:multiSelection),
-        Header(_("Device"), _("Used")),
+      Table.new(
+        :channels_table,
+        :multiSelection,
+        [_("Device"), _("Used")],
         channels_items
       )
     end
@@ -145,7 +142,7 @@ module IOChannel
     EMPTY_LABEL = ""
     def action_buttons
       VBox.new(
-        Label(_("Filter channels")),
+        Label.new(_("Filter channels")),
         InputField.new(:filter_text, :notify, EMPTY_LABEL),
         PushButton.new(:select_all, _("&Select All")),
         PushButton.new(:clear, _("&Clear selection")),
@@ -155,7 +152,7 @@ module IOChannel
     end
 
     def ending_buttons
-      PushButton.new(:ok, _("&Exit"))
+      PushButton.new(:ok, _("&Exit")) { exit :ok }
     end
   end
 end

@@ -186,7 +186,7 @@ class Dialog
       o.to_term
     elsif o.is_a? Yast::Term
       Yast::Term.new(o.value, * o.params.map {|p| termize(p) })
-    elsif
+    else
       o # was a non-term argument of a term
     end
   end

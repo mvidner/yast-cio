@@ -57,7 +57,7 @@ module IOChannel
     def global_handler(input)
         case input
         when :cancel
-          return :ok
+          exit :ok
         when :filter_text
           redraw_channels
         when :clear

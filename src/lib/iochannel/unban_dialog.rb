@@ -77,8 +77,8 @@ module IOChannel
 
     def ending_buttons
       HBox(
-        PushButton(Id(:ok), Yast::Label.OKButton),
-        PushButton(Id(:cancel), Yast::Label.CancelButton)
+        PushButton.new(:ok, Yast::Label.OKButton).to_term,
+        PushButton.new(:cancel, Yast::Label.CancelButton).to_term
       )
     end
 

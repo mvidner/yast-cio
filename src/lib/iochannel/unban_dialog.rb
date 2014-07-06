@@ -38,32 +38,19 @@ module IOChannel
     end
 
   private
-    def controller_loop
-      while true do
-        input = Yast::UI.UserInput
-        case input
-        when :ok
-          begin
-            channel_range_value = Yast::UI.QueryWidget(:channel_range, :Value)
-            range = ChannelRange.from_string channel_range_value
-          rescue InvalidRangeValue => e
-            invalid_range_message(e.value)
-          else
-            return range.matching_channels
-          end
-        when :cancel
-          return nil
-        else
-          raise "Unknown action #{input}"
-        end
-      end
+    def ok_handler
+      channel_range_value = Yast::UI.QueryWidget(:channel_range, :Value)
+      range = ChannelRange.from_string channel_range_value
+      exit(range.matching_channels)
+    rescue InvalidRangeValue => e
+      invalid_range_message(e.value)
     end
 
     def invalid_range_message value
       # TRANSLATORS: %s stands for the smallest snippet inside which we detect syntax error
       msg = _("Specified range is invalid. Wrong value is inside snippet '%s'") % value
       widget = Label.new(msg)
-      Yast::UI.ReplaceWidget(:message, widget)
+      Yast::UI.ReplaceWidget(:message, widget.to_term)
     end
 
     def dialog_content

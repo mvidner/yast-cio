@@ -23,7 +23,6 @@ require "yast"
 
 module IOChannel
   class UnbanDialog < Dialog
-    include Yast::UIShortcuts
     include Yast::I18n
 
     def self.run
@@ -63,12 +62,12 @@ module IOChannel
     def invalid_range_message value
       # TRANSLATORS: %s stands for the smallest snippet inside which we detect syntax error
       msg = _("Specified range is invalid. Wrong value is inside snippet '%s'") % value
-      widget = Label(msg)
+      widget = Label.new(msg)
       Yast::UI.ReplaceWidget(:message, widget)
     end
 
     def dialog_content
-      VBox(
+      VBox.new(
         heading,
         *unban_content,
         ending_buttons
@@ -76,23 +75,23 @@ module IOChannel
     end
 
     def ending_buttons
-      HBox(
-        PushButton.new(:ok, Yast::Label.OKButton),
-        PushButton.new(:cancel, Yast::Label.CancelButton)
+      HBox.new(
+        PushButton.new(:ok, Yast::Label.OKButton) { ok_handler },
+        PushButton.new(:cancel, Yast::Label.CancelButton) { exit nil }
       )
     end
 
     def heading
-      Heading(_("Unban Input/Output Channels"))
+      Heading.new(_("Unban Input/Output Channels"))
     end
 
     def unban_content
       [
-        Label(_("List of ranges of channels to unban separated by comma.\n"+
+        Label.new(_("List of ranges of channels to unban separated by comma.\n"+
           "Range can be channel, part of channel which will be filled to zero or range specified with dash.\n"+
           "Example value: 0.0.0001, AA00, 0.1.0100-200")),
-        ReplacePoint(Id(:message), Empty()),
-        InputField(Id(:channel_range), _("Ranges to Unban."), "")
+        ReplacePoint.new(:message, Empty.new),
+        InputField.new(:channel_range, _("Ranges to Unban."), "")
       ]
     end
   end

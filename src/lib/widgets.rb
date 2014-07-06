@@ -19,6 +19,7 @@
 require "yast"
 
 class Widget
+  attr_reader :id
   # a block
   attr_accessor :handler
 
@@ -39,6 +40,20 @@ class Widget
   # @api private
   def term(*args)
     Yast::Term.new(*args)
+  end
+
+  def optional_id_term
+    if id
+      [term(:id, id)]
+    else
+      []
+    end
+  end
+end
+
+class Empty < Widget
+  def to_term
+    term(self.class.to_s.to_sym)
   end
 end
 
@@ -70,15 +85,24 @@ class Heading < Label
 end
 
 class InputField < Widget
-  attr_reader :id, :opt, :label
-  def initialize(id, opt, label)
+  attr_reader :id, :opts, :label, :initial_value
+  def initialize(id, *args)
     @id = id
-    @opt = opt
-    @label = label
+    if args.first.is_a? Symbol
+      @opts = [args.shift]
+    else
+      @opts = []
+    end
+    @label = args.shift
+    @initial_value = args.first
   end
 
   def to_term
-    term(self.class.to_s.to_sym, term(:id, id), term(:opt, opt), label)
+    args = [self.class.to_s.to_sym, term(:id, id)]
+    args << term(:opt, * opts) unless opts.empty?
+    args << label
+    args << initial_value unless initial_value.nil?
+    term(* args)
   end
 end
 
@@ -113,7 +137,9 @@ class ContainerWidget < Widget
         c
       end
     end
-    term(self.class.to_s.to_sym, * child_terms)
+    term(self.class.to_s.to_sym,
+         * optional_id_term,
+         * child_terms)
   end
 
   def dispatch(ui_id)
@@ -130,6 +156,14 @@ end
 
 class VBox < ContainerWidget
 end
+
+class ReplacePoint < ContainerWidget
+  def initialize(id, * children)
+    @id = id
+    super(* children)
+  end
+end
+
 
 class Dialog
   def run

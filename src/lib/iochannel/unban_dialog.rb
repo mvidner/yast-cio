@@ -26,7 +26,6 @@ module IOChannel
     include Yast::I18n
 
     def self.run
-      Yast.import "UI"
       Yast.import "Label"
 
       dialog = UnbanDialog.new
@@ -48,8 +47,7 @@ module IOChannel
     def invalid_range_message value
       # TRANSLATORS: %s stands for the smallest snippet inside which we detect syntax error
       msg = _("Specified range is invalid. Wrong value is inside snippet '%s'") % value
-      widget = Label.new(msg)
-      Yast::UI.ReplaceWidget(:message, widget.to_term)
+      @message.replace(Label.new(msg))
     end
 
     def dialog_content
@@ -76,7 +74,7 @@ module IOChannel
         Label.new(_("List of ranges of channels to unban separated by comma.\n"+
           "Range can be channel, part of channel which will be filled to zero or range specified with dash.\n"+
           "Example value: 0.0.0001, AA00, 0.1.0100-200")),
-        ReplacePoint.new(:message, Empty.new),
+        @message = ReplacePoint.new(:message, Empty.new),
         @channel_range = InputField.new(:channel_range, _("Ranges to Unban."), "")
       ]
     end

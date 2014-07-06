@@ -180,9 +180,14 @@ class VBox < ContainerWidget
 end
 
 class ReplacePoint < ContainerWidget
-  def initialize(id, * children)
+  def initialize(id, child)
     @id = id
-    super(* children)
+    super(child)
+  end
+
+  def replace(child)
+    @children = [child]
+    Yast::UI.ReplaceWidget(id, child.to_term)
   end
 end
 

@@ -91,9 +91,15 @@ class Dialog
   def open_dialog
     @widget = dialog_content
     term = termize @widget
-    Yast::UI.OpenDialog term
+    Yast::UI.OpenDialog(* options, term)
   end
 
+  def options
+    []
+  end
+
+  # must implement
+  # @return Widget
   def dialog_content
     raise NotImplementedError
   end

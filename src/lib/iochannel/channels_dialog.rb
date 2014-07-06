@@ -42,8 +42,8 @@ module IOChannel
   private
     DEFAULT_SIZE_OPT = Yast::Term.new(:opt, :defaultsize)
 
-    def open_dialog
-      Yast::UI.OpenDialog DEFAULT_SIZE_OPT, termize(dialog_content)
+    def options
+      [DEFAULT_SIZE_OPT]
     end
 
     def read_channels

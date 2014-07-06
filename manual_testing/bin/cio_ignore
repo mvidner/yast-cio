@@ -19,13 +19,13 @@
 #  you may find current contact information at www.suse.com
 
 
-if ARGV.size < 2
-  puts "Fake cio_ignore script with limited ability. Usage:
+if ARGV.size < 1
+  $stderr.puts "Fake cio_ignore script with limited ability. Usage:
   cio_ignore <-a|-r> <comma separated list of devices to add/remove>"
   exit 1
 end
 
-devices = ARGV[1].split(",")
+devices = (ARGV[1] || "").split(",")
 
 ORIG_DIR = File.expand_path("../../data", __FILE__)
 TARGET_FILE = "#{ORIG_DIR}/lscss.output"

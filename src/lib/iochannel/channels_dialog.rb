@@ -26,8 +26,6 @@ module IOChannel
     include Yast::I18n
 
     def self.run
-      Yast.import "UI"
-
       dialog = ChannelsDialog.new
       dialog.run
     end
@@ -50,7 +48,7 @@ module IOChannel
     end
 
     def redraw_channels
-      Yast::UI.ChangeWidget(:channels_table, :Items, channels_items)
+      @channels_table.items = channels_items
     end
 
     def global_handler(input)

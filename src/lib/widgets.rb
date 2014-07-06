@@ -19,6 +19,8 @@
 require "yast"
 
 class Widget
+  Yast.import "UI"
+
   attr_reader :id
   # a block
   attr_accessor :handler
@@ -137,6 +139,10 @@ class Table < Widget
 
   def value_property
     :SelectedItems
+  end
+
+  def items=(v)
+    Yast::UI.ChangeWidget(id, :Items, v)
   end
 end
 

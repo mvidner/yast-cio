@@ -34,6 +34,7 @@ module Yast
   end
 
   module UIShortcuts
+    def Empty(*);      end
     def HBox(*);       end
     def Header(*);     end
     def Heading(*);    end
@@ -43,6 +44,7 @@ module Yast
     def Label(*);      end
     def Opt(*);        end
     def PushButton(*); end
+    def ReplacePoint(*); end
     def Table(*);      end
     def VBox(*);       end
   end

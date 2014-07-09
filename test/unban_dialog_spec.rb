@@ -19,10 +19,14 @@
 
 
 require_relative "spec_helper"
+require_relative "yast_stubs"
 
-require "iochannel/unban_dialog"
+describe "IOChannel::UnbanDialog" do
+  before :all do
+    stub_yast_require
+    require "iochannel/unban_dialog"
+  end
 
-describe IOChannel::UnbanDialog do
   def mock_dialog data={}
     data[:input] ||= :ok
     data[:channel_range] ||= ""
@@ -44,6 +48,12 @@ describe IOChannel::UnbanDialog do
     allow(ui).to receive(:QueryWidget).
       with(:channel_range, :Value).
       and_return(data[:channel_range])
+
+    yast_label = double("Yast::Label")
+    stub_const("Yast::Label", yast_label)
+
+    allow(yast_label).to receive(:OKButton)
+    allow(yast_label).to receive(:CancelButton)
   end
 
   it "return a simple value" do
